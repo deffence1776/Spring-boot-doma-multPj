@@ -1,0 +1,61 @@
+buildscript {
+	repositories {
+		maven { url "http://repo.spring.io/libs-release" }
+		mavenLocal()
+		mavenCentral()
+	}
+	dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.1.RELEASE") }
+}
+
+domaVersion = '2.0.0'
+
+allprojects{
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'spring-boot'
+	
+	repositories {
+		mavenCentral()
+		maven { url "http://repo.spring.io/libs-release" }
+		maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+	}
+
+	dependencies {
+		compile('com.google.guava:guava:17.0')
+	}
+}
+
+project(':domain'){
+	//特になにもなし。
+}
+
+project(':persistence'){
+	apply from:'eclipse.gradle'
+
+	processResources.destinationDir = compileJava.destinationDir
+	compileJava.dependsOn processResources
+
+	dependencies {
+		compile project(':domain')
+		compile("org.springframework.boot:spring-boot-starter-jdbc")
+		compile("org.seasar.doma:doma:${domaVersion}")
+		compile("com.h2database:h2")
+	}
+}
+
+project(':web-app'){
+
+	jar {
+		baseName = 'testEmp'
+		version =  '0.1.0'
+	}
+
+	dependencies {
+		compile project(':domain')
+		compile project(":persistence")
+		compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	}
+
+	task wrapper(type: Wrapper) { gradleVersion = '1.11' }
+}
