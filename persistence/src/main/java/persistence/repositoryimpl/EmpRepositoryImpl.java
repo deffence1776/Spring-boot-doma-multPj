@@ -25,8 +25,6 @@ public class EmpRepositoryImpl implements EmployeeRepository {
 		empDao.find().forEach(e ->
 			employeeList.add(new Employee(e.getEmpId(), e.getEmpName()))
 		);
-		List<java.sql.Date> l = Lists.newArrayList();
-		List<java.util.Date> l2 = Lists.newArrayList();
 		
 
 		return employeeList;
